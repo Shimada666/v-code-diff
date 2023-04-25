@@ -21,6 +21,16 @@ This project references the following projects, and I would like to express my g
 * [vue-code-diff](https://github.com/ddchef/vue-code-diff)
 * Github Code Diff
 
+## Preview
+
+### line-by-line
+
+![line-by-line](doc/vue3-playground-line-by-line.jpg)
+
+### side-by-side
+
+![side-by-side](doc/vue3-playground-side-by-side.jpg)
+
 ## Contents
 
 - [Install](#Install)

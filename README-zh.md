@@ -21,6 +21,16 @@
 * [vue-code-diff](https://github.com/ddchef/vue-code-diff)
 * Github Code Diff
 
+## 效果展示
+
+### line-by-line
+
+![line-by-line](doc/vue3-playground-line-by-line.jpg)
+
+### side-by-side
+
+![side-by-side](doc/vue3-playground-side-by-side.jpg)
+
 ## 目录
 
 - [安装](#安装)
