@@ -18,6 +18,7 @@ interface Props {
   noDiffLineFeed?: boolean
   maxHeight?: string
   filename?: string
+  compareFilename?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -29,6 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
   noDiffLineFeed: false,
   maxHeight: undefined,
   filename: undefined,
+  compareFilename: undefined,
 })
 
 const isUnifiedViewer = computed(() => props.outputFormat === 'line-by-line')
@@ -39,6 +41,7 @@ const oldString = computed(() => {
   value = props.noDiffLineFeed ? value.replace(/(\r\n)/g, '\n') : value
   return value
 })
+
 const newString = computed(() => {
   let value = props.newString || ''
   value = props.trim ? value.trim() : value
@@ -48,23 +51,46 @@ const newString = computed(() => {
 
 const raw = computed(() =>
   isUnifiedViewer.value
-    ? createUnifiedDiff(oldString.value, newString.value, props.language, props.diffStyle, props.context)
-    : createSplitDiff(oldString.value, newString.value, props.language, props.diffStyle, props.context),
+    ? createUnifiedDiff(
+      oldString.value,
+      newString.value,
+      props.language,
+      props.diffStyle,
+      props.context,
+    )
+    : createSplitDiff(
+      oldString.value,
+      newString.value,
+      props.language,
+      props.diffStyle,
+      props.context,
+    ),
 )
 const diffChange = ref(raw.value)
-watch(() => props, () => {
-  diffChange.value = raw.value
-}, { deep: true })
+watch(
+  () => props,
+  () => {
+    diffChange.value = raw.value
+  },
+  { deep: true },
+)
 </script>
 
 <template>
   <div class="code-diff-view" :style="{ maxHeight }">
     <div class="file-header">
       <div class="file-info">
-        <span class="filename">{{ filename }}</span>
+        <div :class="{ 'filename-wrapper': !isUnifiedViewer }">
+          <div class="filename" :style="{ width: isUnifiedViewer ? null : '60%' }">
+            {{ filename }}
+          </div>
+          <div class="filename">
+            {{ compareFilename }}
+          </div>
+        </div>
         <span class="diff-stat">
           <span class="diff-stat-added">+{{ diffChange.stat.additionsNum }} additions</span>
-          <span class="diff-stat-deleted" style="margin-left: 8px;">-{{ diffChange.stat.deletionsNum }} deletions</span>
+          <span class="diff-stat-deleted" style="margin-left: 8px">-{{ diffChange.stat.deletionsNum }} deletions</span>
         </span>
       </div>
     </div>

@@ -7,9 +7,7 @@ const props = defineProps<{
 }>()
 
 function expandHandler({ hideIndex }: UnifiedLineChange) {
-  if (hideIndex === undefined)
-    return
-  props.diffChange.collector[hideIndex!].lines.forEach((line) => {
+  props.diffChange.collector[hideIndex]?.lines?.forEach((line) => {
     line.hide = false
     line.fold = false
   })

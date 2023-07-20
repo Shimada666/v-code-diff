@@ -19,25 +19,40 @@
     border-bottom: 1px solid var(--color-border-default);
     padding: 8px 16px;
     font-size: 12px;
-    font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+    font-family:
+      ui-monospace,
+      SFMono-Regular,
+      SF Mono,
+      Menlo,
+      Consolas,
+      Liberation Mono,
+      monospace;
 
     .file-info {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      width: 100%;
       margin-left: 8px;
       height: 24px;
-
-      .filename {
-        font-size: 13px;
-        color: var(--color-fg-default);
+      .filename-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        width: 85%;
+        .filename {
+          text-align: left;
+          font-size: 13px;
+          color: var(--color-fg-default);
+        }
       }
       .diff-stat {
+        width: 15%;
+        text-align: right;
         .diff-stat-added {
-          color: var(--color-diffstat-addition-bg)
+          color: var(--color-diffstat-addition-bg);
         }
         .diff-stat-deleted {
-          color: var(--color-danger-emphasis)
+          color: var(--color-danger-emphasis);
         }
       }
     }
@@ -55,7 +70,14 @@
       min-width: 50px;
       padding-right: 10px;
       padding-left: 10px;
-      font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+      font-family:
+        ui-monospace,
+        SFMono-Regular,
+        SF Mono,
+        Menlo,
+        Consolas,
+        Liberation Mono,
+        monospace;
       font-size: 12px;
       line-height: 20px;
       color: var(--color-fg-subtle);
@@ -86,7 +108,14 @@
       .blob-code-inner {
         display: table-cell;
         overflow: visible;
-        font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+        font-family:
+          ui-monospace,
+          SFMono-Regular,
+          SF Mono,
+          Menlo,
+          Consolas,
+          Liberation Mono,
+          monospace;
         font-size: 12px;
         color: var(--color-fg-default);
         word-wrap: anywhere;
@@ -148,4 +177,3 @@
     border-right-color: var(--color-border-muted);
   }
 }
-

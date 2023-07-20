@@ -33,24 +33,31 @@ const getCodeMarker = (type: DiffType) => {
         <td class="blob-code blob-code-empty empty-cell" />
       </template>
       <template v-else>
-        <td class="blob-num" :class="{
-          'blob-num-deletion': line.type === DiffType.DELETE,
-          'blob-num-addition': line.type === DiffType.ADD,
-          'blob-num-context': line.type === DiffType.EQUAL,
-          'blob-num-hunk': splitLine.hide !== undefined,
-
-        }">
+        <td
+          class="blob-num"
+          :class="{
+            'blob-num-deletion': line.type === DiffType.DELETE,
+            'blob-num-addition': line.type === DiffType.ADD,
+            'blob-num-context': line.type === DiffType.EQUAL,
+            'blob-num-hunk': splitLine.hide !== undefined,
+          }"
+        >
           {{ line.num }}
         </td>
-        <td class="blob-code" :class="{
-          'blob-code-deletion': line.type === DiffType.DELETE,
-          'blob-code-addition': line.type === DiffType.ADD,
-          'blob-code-context': line.type === DiffType.EQUAL,
-          'blob-code-hunk': splitLine.hide !== undefined,
-
-        }">
-          <span class="blob-code-inner blob-code-marker" :data-code-marker="getCodeMarker(line.type)"
-            v-html="line.code" />
+        <td
+          class="blob-code"
+          :class="{
+            'blob-code-deletion': line.type === DiffType.DELETE,
+            'blob-code-addition': line.type === DiffType.ADD,
+            'blob-code-context': line.type === DiffType.EQUAL,
+            'blob-code-hunk': splitLine.hide !== undefined,
+          }"
+        >
+          <span
+            class="blob-code-inner blob-code-marker"
+            :data-code-marker="getCodeMarker(line.type)"
+            v-html="line.code"
+          ></span>
         </td>
       </template>
       <!-- eslint-enable -->

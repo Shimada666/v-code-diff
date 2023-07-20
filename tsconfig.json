@@ -16,7 +16,7 @@
       "scripthost"
     ]
   },
-  "include": [    
+  "include": [
     "src/**/*.vue",
     "src/**/*.ts",
     "env.d.ts",
@@ -25,9 +25,13 @@
     "vite.config.ts",
     "types/*.d.ts"
   ],
-    "exclude": [
-      "node_modules",
-      "dist"
-    ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

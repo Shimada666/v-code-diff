@@ -7,9 +7,7 @@ const props = defineProps<{
 }>()
 
 function expandHandler({ hideIndex }: SplitLineChange) {
-  if (hideIndex === undefined)
-    return
-  props.diffChange.collector[hideIndex!].lines.forEach((line) => {
+  props.diffChange.collector[hideIndex]?.lines?.forEach((line) => {
     line.hide = false
     line.fold = false
   })
@@ -19,13 +17,18 @@ function expandHandler({ hideIndex }: SplitLineChange) {
 <template>
   <table class="file-diff-split diff-table">
     <colgroup>
-      <col width="44">
+      <col width="40">
       <col>
-      <col width="44">
+      <col width="40">
       <col>
     </colgroup>
     <tbody>
-      <SplitLine v-for="(item, index) in diffChange?.changes" :key="index" :split-line="item" @expand="expandHandler" />
+      <SplitLine
+        v-for="(item, index) in diffChange?.changes"
+        :key="index"
+        :split-line="item"
+        @expand="expandHandler"
+      />
     </tbody>
   </table>
 </template>

@@ -2,15 +2,24 @@
   "name": "v-code-diff",
   "version": "1.5.1",
   "description": "template component for vue-demi, can dev and build",
+  "author": "Shimada666<649940882@qq.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shimada666/v-code-diff.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Shimada666/v-code-diff/issues"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs.js",
+      "import": "./dist/index.es.js"
+    }
+  },
   "main": "dist/index.cjs",
   "module": "dist/index.es.js",
   "types": "./types/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.es.js",
-      "require": "./dist/index.cjs.js"
-    }
-  },
   "files": [
     "scripts",
     "dist",
@@ -35,15 +44,6 @@
     "postinstall": "node scripts/postinstall.js",
     "prepublishOnly": "npm run build",
     "release": "bumpp --commit --no-push --tag && npm publish"
-  },
-  "author": "Shimada666<649940882@qq.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Shimada666/v-code-diff/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Shimada666/v-code-diff.git"
   },
   "peerDependencies": {
     "@vue/composition-api": "^1.4.9",

@@ -32,8 +32,10 @@ const form = reactive({
 `,
   language: 'javascript',
   diffStyle: 'word',
-  outputFormat: 'line-by-line',
+  outputFormat: 'side-by-side',
   context: 3,
+  filename: 'playground-old.json',
+  compareFilename: 'playground-compare.json',
 })
 </script>
 
@@ -42,10 +44,13 @@ const form = reactive({
     Vue version: {{ version }}
   </p>
   <div style="display: flex; justify-content: space-evenly">
-    <textarea v-model="form.oldString" style="width: 48vw;" :rows="20" />
-    <textarea v-model="form.newString" style="width: 48vw;" :rows="20" />
+    <textarea v-model="form.oldString" style="width: 48vw" :rows="20" />
+    <textarea v-model="form.newString" style="width: 48vw" :rows="20" />
   </div>
   <CodeDiff
+    :output-format="form.outputFormat"
+    :filename="form.filename"
+    :compare-filename="form.compareFilename"
     :old-string="form.oldString"
     :new-string="form.newString"
     :language="form.language"
