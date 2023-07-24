@@ -17,9 +17,9 @@ function expandHandler({ hideIndex }: SplitLineChange) {
 <template>
   <table class="file-diff-split diff-table">
     <colgroup>
-      <col width="40">
+      <col width="45">
       <col>
-      <col width="40">
+      <col width="45">
       <col>
     </colgroup>
     <tbody>
