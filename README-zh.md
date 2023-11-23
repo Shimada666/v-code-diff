@@ -118,7 +118,7 @@ Vue.use(CodeDiff);
 | diffStyle      | 差异风格, 单词级差异或字母级差异                                                                                                        | string    | word, char                 | word         |
 | trim           | 移除字符串前后空白字符                                                                                                                  | boolean   | -                          | false        |
 | noDiffLineFeed | 不 diff windows 换行符(CRLF)与 linux 换行符(LF)                                                                                         | boolean   | -                          | false        |
-| maxHeight      | 组件最大高度，例如 300px                                                                                                                | number    | -                          | undefined    |
+| maxHeight      | 组件最大高度，例如 300px                                                                                                                | string    | -                          | undefined    |
 | filename       | 文件名                                                                                                                                  | string    | -                          | undefined    |
 | newFilename    | 新文件文件名                                                                                                                   | string    | -                          | undefined    |
 | theme          | 用于切换日间模式/夜间模式                                                                                                               | ThemeType | light , dark               | 'light'      |
