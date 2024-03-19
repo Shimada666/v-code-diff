@@ -11,6 +11,7 @@ const formState = reactive({
   language: 'json',
   theme: 'light',
   diffStyle: 'word',
+  enableSplitDiff: false,
   outputFormat: 'side-by-side',
   context: 10,
   trim: false,
@@ -178,13 +179,18 @@ function toggleLang() {
               <a-switch v-model:checked="formState.hideStat" />
             </a-form-item>
           </a-col>
+          <a-col :md="8" :sm="24">
+            <a-form-item label="启用细分变更(enable split diff)">
+              <a-switch v-model:checked="formState.enableSplitDiff" />
+            </a-form-item>
+          </a-col>
         </a-row>
       </a-form>
     </a-card>
     <div>
       <CodeDiff
         :theme="formState.theme" :old-string="oldString" :new-string="newString" :language="formState.language"
-        :diff-style="formState.diffStyle" :output-format="formState.outputFormat" :context="formState.context"
+        :diff-style="formState.diffStyle" :enable-split-diff="formState.enableSplitDiff" :output-format="formState.outputFormat" :context="formState.context"
         :trim="formState.trim" :no-diff-line-feed="formState.noDiffLineFeed" :filename="formState.filename"
         :new-filename="formState.newFilename" :hide-header="formState.hideHeader" :hide-stat="formState.hideStat"
         @diff="printEvent"
