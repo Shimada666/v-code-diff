@@ -50,16 +50,15 @@
     }
   },
   "dependencies": {
-    "diff": "^5.1.0",
+    "diff": "^5.2.0",
     "diff-match-patch": "^1.0.5",
-    "highlight.js": "^11.9.0",
-    "vue-demi": "^0.14.6",
-    "vue-i18n": "9"
+    "highlight.js": "^11.10.0",
+    "vue-demi": "^0.14.6"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.4.5",
-    "@types/diff": "^5.0.0",
-    "@types/diff-match-patch": "^1.0.32",
+    "@types/diff": "^5.2.2",
+    "@types/diff-match-patch": "^1.0.36",
     "@types/node": "^18.11.18",
     "@unocss/eslint-plugin": "^0.58.0",
     "@vueuse/core": "^10.7.0",
@@ -69,9 +68,10 @@
     "rimraf": "^3.0.2",
     "sass": "^1.69.5",
     "typescript": "~4.7.4",
-    "vite": "^4.5.1",
+    "vite": "^5.4.2",
     "vite-plugin-css-injected-by-js": "^2.4.0",
-    "vue": "^3.3.11",
+    "vue": "^3.4.38",
+    "vue-i18n": "^9.14.0",
     "vue-tsc": "^0.40.13",
     "vue2": "npm:vue@2",
     "vue3": "npm:vue@3"
