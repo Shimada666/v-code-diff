@@ -2,7 +2,7 @@
 import { version } from 'vue-demi'
 import { reactive } from 'vue'
 import c from 'highlight.js/lib/languages/c'
-import { CodeDiff, hljs } from '../src/index'
+import { CodeDiff, CodeReader, hljs } from '../src/index'
 
 hljs.registerLanguage('c', c)
 // import { oldLongText } from '../demo/text/old-long-text'
@@ -42,6 +42,8 @@ const form = reactive({
     :diff-style="form.diffStyle"
     :context="form.context"
   />
+  <hr>
+  <CodeReader :text="form.newString" :language="form.language" />
 </template>
 
 <style>
