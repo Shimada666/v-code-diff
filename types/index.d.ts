@@ -8,8 +8,11 @@ declare const _default: {
 
 // eslint-disable-next-line
 declare const CodeDiff: DefineComponent<{}, {}, any>
+// eslint-disable-next-line
+declare const CodeReader: DefineComponent<{}, {}, any>
 export {
   CodeDiff,
+  CodeReader,
 }
 
 export default _default
