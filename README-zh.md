@@ -48,6 +48,16 @@ yarn add v-code-diff
 pnpm add v-code-diff
 ```
 
+> ⚠️ 重要提示：如果你使用 pnpm 10.x 版本，需要在 package.json 中添加以下配置：
+> ```json
+> {
+>   "pnpm": {
+>     "onlyBuiltDependencies": ["v-code-diff"]
+>   }
+> }
+> ```
+> 这是因为 pnpm 10.x 默认会阻止 postinstall 脚本运行，而 v-code-diff 需要依赖 postinstall 脚本来选择适配 Vue 版本的构建产物。详情可见 [pnpm/pnpm#8897](https://github.com/pnpm/pnpm/pull/8897)。
+
 Vue2.6 及以下用户需要额外安装 composition-api
 
 ```shell

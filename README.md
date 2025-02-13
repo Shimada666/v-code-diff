@@ -47,6 +47,16 @@ yarn add v-code-diff
 pnpm add v-code-diff
 ```
 
+> ⚠️ Important: If you are using pnpm 10.x, you need to add the following configuration to your package.json:
+> ```json
+> {
+>   "pnpm": {
+>     "onlyBuiltDependencies": ["v-code-diff"]
+>   }
+> }
+> ```
+> This is because pnpm 10.x blocks postinstall scripts by default, while v-code-diff relies on postinstall scripts to select the appropriate build artifacts for Vue version compatibility. For more details, see [pnpm/pnpm#8897](https://github.com/pnpm/pnpm/pull/8897).
+
 Vue2.6 developers need install composition-api
 
 ```shell

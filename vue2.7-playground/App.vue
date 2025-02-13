@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { version } from 'vue-demi'
 import { reactive } from 'vue'
-import { CodeReader } from '../src/index'
 
 const form = reactive({
   oldString: '{\n  "code": "200",\n  "msg": "请求成功",\n  "data": {\n    "hitokoto": "往者不可谏，来者犹可追。",\n    "from": "论语·微子篇"\n  },\n  "time": "2024-01-12 17:27:03"\n}',
@@ -27,8 +26,6 @@ const form = reactive({
       :ignore-matching-lines="form.ignoreMatchingLines"
       output-format="side-by-side"
     />
-    <hr>
-    <CodeReader :text="form.newString" :language="form.language" />
   </div>
 </template>
 
