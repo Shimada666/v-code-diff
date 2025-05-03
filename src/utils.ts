@@ -59,6 +59,9 @@ function diffLines(prev: string, current: string) {
 }
 
 function getHighlightCode(language: string, code: string) {
+  if (typeof document === 'undefined')
+    return code
+
   const hasModifiedTags = code.match(new RegExp(`(${MODIFIED_START_TAG}|${MODIFIED_CLOSE_TAG})`, 'g'))
 
   if (!hasModifiedTags)

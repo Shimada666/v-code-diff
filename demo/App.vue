@@ -2,12 +2,14 @@
 import { version } from 'vue-demi'
 import { reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { newShortText } from './text/new-short-text'
-import { oldShortText } from './text/old-short-text'
+
+import oldShortText from './text/old-short-text.txt?raw'
+import newShortText from './text/new-short-text.txt?raw'
+import oldLongText from './text/old-long-text.txt?raw'
+import newLongText from './text/new-long-text.txt?raw'
 
 declare const __APP_VERSION__: string
 const appVersion = __APP_VERSION__
-
 
 interface FormState {
   language: string
@@ -41,19 +43,22 @@ const formState = reactive<FormState>({
   maxHeight: '',
 })
 
-const oldString = ref(oldShortText.value)
-const newString = ref(newShortText.value)
-if (localStorage.getItem('oldString'))
-  oldString.value = localStorage.getItem('oldString') ?? oldShortText.value
+const OLD_STRING = oldLongText
+const NEW_STRING = newLongText
 
+const oldString = ref(OLD_STRING)
+const newString = ref(NEW_STRING)
+
+if (localStorage.getItem('oldString'))
+  oldString.value = localStorage.getItem('oldString')
 if (localStorage.getItem('newString'))
-  newString.value = localStorage.getItem('newString') ?? newShortText.value
+  newString.value = localStorage.getItem('newString')
 
 function resetText() {
   localStorage.removeItem('oldString')
   localStorage.removeItem('newString')
-  oldString.value = oldShortText.value
-  newString.value = newShortText.value
+  oldString.value = OLD_STRING
+  newString.value = NEW_STRING
 }
 
 function clearText() {
