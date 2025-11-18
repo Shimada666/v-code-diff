@@ -9,6 +9,11 @@
       "types": "./types/index.d.ts",
       "import": "./dist/index.es.js",
       "require": "./dist/index.cjs.js"
+    },
+    "./v3": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/v3/index.es.js",
+      "require": "./dist/v3/index.cjs.js"
     }
   },
   "main": "dist/index.cjs",
