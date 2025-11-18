@@ -71,7 +71,7 @@ pnpm add @vue/composition-api
 > Recommend using local registration for better tree-shaking support.
 ```vue
 <script setup>
-import { CodeDiff } from 'v-code-diff'
+import { CodeDiff } from 'v-code-diff/v3'
 </script>
 
 <template>
@@ -89,7 +89,7 @@ import { CodeDiff } from 'v-code-diff'
 
 ```ts
 import { createApp } from 'vue'
-import CodeDiff from 'v-code-diff'
+import { CodeDiff } from 'v-code-diff/v3'
 
 app
   .use(CodeDiff)
