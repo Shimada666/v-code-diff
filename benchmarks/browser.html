@@ -13,6 +13,7 @@
       const params = new URLSearchParams(location.search)
       const lineCount = Number(params.get('lines') ?? 15000)
       const language = params.has('json') ? 'json' : 'plaintext'
+      const outputFormat = params.has('split') ? 'side-by-side' : 'line-by-line'
       const lines = Array.from({ length: lineCount }, (_, index) => language === 'json' ? `{"key${index}": ${index}},` : `const value${index} = ${index}`)
       const allChanged = params.has('all')
       const identical = params.has('identical')
@@ -25,7 +26,7 @@
       }
       const startedAt = performance.now()
       const app = Vue.createApp({
-        data: () => ({ language, oldString: lines.join('\n'), newString: changedLines.join('\n') }),
+        data: () => ({ language, oldString: lines.join('\n'), newString: changedLines.join('\n'), outputFormat }),
         mounted() {
           const report = () => {
             const result = `${(performance.now() - startedAt).toFixed(1)}ms, ${document.querySelectorAll('tr').length} rows`
@@ -42,7 +43,7 @@
             }
           }))
         },
-        template: '<CodeDiff :old-string="oldString" :new-string="newString" :language="language" :context="3" hide-header />',
+        template: '<CodeDiff :old-string="oldString" :new-string="newString" :language="language" :output-format="outputFormat" :context="3" hide-header />',
       })
       app.use(CodeDiff).mount('#app')
     </script>
