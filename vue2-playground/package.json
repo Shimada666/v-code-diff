@@ -6,12 +6,12 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@vue/composition-api": "^1.6.2",
+    "@vue/composition-api": "^1.7.2",
     "vue": "~2.6.14"
   },
   "devDependencies": {
-    "unplugin-vue2-script-setup": "^0.11.3",
-    "vite": "^5.4.2",
+    "unplugin-vue2-script-setup": "^0.11.4",
+    "vite": "^6.4.3",
     "vite-plugin-vue2": "^2.0.3",
     "vue-template-compiler": "~2.6.14"
   }

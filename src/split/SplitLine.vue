@@ -36,7 +36,6 @@ function onChangeClick(event: MouseEvent, line: DiffLine, side: 'old' | 'new') {
     return
 
   // Vue 2 DOM templates require kebab-case event names.
-  // eslint-disable-next-line vue/custom-event-name-casing
   emit('change-click', {
     side,
     type: line.type,

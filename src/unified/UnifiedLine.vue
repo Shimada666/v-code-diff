@@ -15,7 +15,6 @@ function onChangeClick(event: MouseEvent) {
     return
 
   // Vue 2 DOM templates require kebab-case event names.
-  // eslint-disable-next-line vue/custom-event-name-casing
   emit('change-click', {
     side: props.line.type === DiffType.DELETE ? 'old' : 'new',
     type: props.line.type,

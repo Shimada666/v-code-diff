@@ -49,11 +49,12 @@ export interface DiffChangeClickEvent {
 }
 
 export interface CodeDiffSlots {
-  stat: (props: { stat: DiffStat }) => VNode[]
+  'header-actions': () => VNode[]
+  'stat': (props: { stat: DiffStat }) => VNode[]
 }
 
 interface CodeDiffEmits {
-  diff: (diffResult: DiffResult) => void
+  'diff': (diffResult: DiffResult) => void
   'change-click': (payload: DiffChangeClickEvent) => void
 }
 

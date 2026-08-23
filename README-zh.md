@@ -186,6 +186,7 @@ Vue.use(CodeDiff)
 | Name | Description                     |
 | ---- | ------------------------------- |
 | stat | 自定义统计内容，插槽参数为 `{ stat }` |
+| header-actions | 在头部区域显示自定义操作按钮 |
 
 ## 扩展高亮语言
 
@@ -234,11 +235,11 @@ export default {
 ```
 #### 全局注册
 ```typescript
-import CodeDiff from "v-code-diff"
+import CodeDiff from 'v-code-diff'
 // 注册 C 语言
-import c from "highlight.js/lib/languages/c"
+import c from 'highlight.js/lib/languages/c'
 
-CodeDiff.hljs.registerLanguage("c", c)
+CodeDiff.hljs.registerLanguage('c', c)
 ```
 
 ## 从 0.x 版本迁移

@@ -21,6 +21,7 @@ declare const codeReader: InstanceType<typeof CodeReader>
 
 codeDiff.$emit('diff', result)
 codeDiff.$emit('change-click', changeClick)
+codeDiff.$slots['header-actions']()
 codeDiff.$slots.stat({ stat })
 codeDiffProps.oldString.toUpperCase()
 codeReaderProps.text.toUpperCase()

@@ -6,8 +6,10 @@ packages:
   - common
 
 allowBuilds:
+  '@parcel/watcher': false
   core-js: true
   esbuild: true
+  unrs-resolver: false
   vue-demi: true
 
 packageExtensions:

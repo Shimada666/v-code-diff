@@ -1,4 +1,3 @@
-/* eslint-disable test/consistent-test-it -- Vitest benchmarks use bench(), not it(). */
 import { bench } from 'vitest'
 import { createSplitDiff, createUnifiedDiff } from '../src/utils'
 

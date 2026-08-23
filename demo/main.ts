@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createI18n } from 'vue-i18n'
 import CodeDiff from '../src/index'
 import App from './App.vue'
+
 function getDefaultLang() {
   // 用户指定了默认语言时，使用用户指定的
   if (localStorage.getItem('lang') !== null) {

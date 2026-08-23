@@ -144,6 +144,7 @@ watch(() => props, () => {
             <UpArrowIcon />
           </button>
         </span>
+        <slot name="header-actions" />
         <span v-if="!hideStat" class="diff-stat">
           <slot name="stat" :stat="diffChange.stat">
             <span class="diff-stat-added">+{{ diffChange.stat.additionsNum }} additions</span>
@@ -164,6 +165,7 @@ watch(() => props, () => {
               <UpArrowIcon />
             </button>
           </span>
+          <slot name="header-actions" />
           <span v-if="!hideStat" class="diff-stat">
             <slot name="stat" :stat="diffChange.stat">
               <span class="diff-stat-added">+{{ diffChange.stat.additionsNum }} additions</span>

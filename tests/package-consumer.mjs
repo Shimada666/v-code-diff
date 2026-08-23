@@ -18,14 +18,23 @@ if (vueVersion.startsWith('2.')) {
 
   const renderer = require('vue-server-renderer').createRenderer()
   html = await renderer.renderToString(new Vue({
-    render: h => h(cjs.CodeDiff, { props: { oldString: 'old', newString: 'new', hideNavigation: true } }),
+    render: h => h(cjs.CodeDiff, {
+      props: { oldString: 'old', newString: 'new', hideNavigation: true },
+      scopedSlots: {
+        'header-actions': () => h('button', { attrs: { 'data-header-action': '' } }, 'Copy'),
+      },
+    }),
   }))
 }
 else {
   const { createSSRApp, h } = require('vue')
   const { renderToString } = require('@vue/server-renderer')
   html = await renderToString(createSSRApp({
-    render: () => h(cjs.CodeDiff, { oldString: 'old', newString: 'new', hideNavigation: true }),
+    render: () => h(
+      cjs.CodeDiff,
+      { oldString: 'old', newString: 'new', hideNavigation: true },
+      { 'header-actions': () => h('button', { 'data-header-action': '' }, 'Copy') },
+    ),
   }))
 }
 
@@ -33,3 +42,5 @@ if (!html.includes('code-diff-view'))
   throw new Error(`${entry} did not render CodeDiff through SSR`)
 if (html.includes('Next Change'))
   throw new Error(`${entry} ignored hideNavigation during SSR`)
+if (!html.includes('data-header-action'))
+  throw new Error(`${entry} did not render the header-actions slot during SSR`)

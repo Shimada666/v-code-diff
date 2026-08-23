@@ -186,6 +186,7 @@ Vue.use(CodeDiff)
 | Name | Description                                                 |
 | ---- | ----------------------------------------------------------- |
 | stat | Custom statistics content. The slot prop is `{ stat }`. |
+| header-actions | Custom actions displayed in the header. |
 
 ## Extend languages
 
