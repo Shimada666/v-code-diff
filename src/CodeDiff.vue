@@ -169,8 +169,8 @@ watch(() => props, () => {
         </span>
       </div>
     </div>
-    <UnifiedViewer v-if="isUnifiedViewer" :diff-change="diffChange" />
-    <SplitViewer v-else :diff-change="diffChange" />
+    <UnifiedViewer v-if="isUnifiedViewer" :diff-change="diffChange" :language="language" />
+    <SplitViewer v-else :diff-change="diffChange" :language="language" />
   </div>
 </template>
 

@@ -49,6 +49,15 @@ function renderWords(prev?: string, current?: string, diffStyle = 'word'): strin
 }
 
 function diffLines(prev: string, current: string) {
+  const prevHasFinalNewline = prev.endsWith('\n')
+  const currentHasFinalNewline = current.endsWith('\n')
+  if (prevHasFinalNewline !== currentHasFinalNewline) {
+    if (prevHasFinalNewline)
+      prev = prev.slice(0, -1)
+    else
+      current = current.slice(0, -1)
+  }
+
   const dmp = new DiffMatchPatch()
   const a = dmp.diff_linesToChars_(prev, current)
   const linePrev = a.chars1
@@ -56,7 +65,7 @@ function diffLines(prev: string, current: string) {
   const lineArray = a.lineArray
   const diffs: any[] = dmp.diff_main(linePrev, lineCurrent, false)
   dmp.diff_charsToLines_(diffs, lineArray)
-  return diffs.map((x) => {
+  const changes: Diff.Change[] = diffs.map((x) => {
     const [type, text] = x
     const count = text.replace(/\n$/, '').split('\n').length
     const change: Diff.Change = {
@@ -67,6 +76,17 @@ function diffLines(prev: string, current: string) {
     }
     return change
   })
+
+  if (prevHasFinalNewline !== currentHasFinalNewline) {
+    changes.push({
+      count: 1,
+      value: '',
+      removed: prevHasFinalNewline,
+      added: currentHasFinalNewline,
+    })
+  }
+
+  return changes
 }
 
 function getHighlightCode(language: string, code: string) {
@@ -152,6 +172,22 @@ function getHighlightCode(language: string, code: string) {
     .replace(new RegExp(closeEntity, 'g'), '</span>')
 }
 
+export function highlightUnifiedLine(line: UnifiedLineChange, language: string) {
+  line.code = getHighlightCode(language, line.code)
+}
+
+export function highlightSplitLine(line: SplitLineChange, language: string) {
+  const leftCode = line.left.code
+  if (leftCode !== undefined)
+    line.left.code = getHighlightCode(language, leftCode)
+
+  if (line.right.code !== undefined) {
+    line.right.code = line.left.type === DiffType.EQUAL && line.right.type === DiffType.EQUAL && line.right.code === leftCode
+      ? line.left.code
+      : getHighlightCode(language, line.right.code)
+  }
+}
+
 function calcDiffStat(changes: Change[], ignoreRegex?: RegExp): DiffStat {
   const count = (s: string, c: string) => (s.match(new RegExp(c, 'g')) || []).length
   const ignoreCount = (lines: string[]) => lines.filter(line => ignoreRegex?.test(line)).length
@@ -224,25 +260,24 @@ export function createSplitDiff(
         let left: DiffLine = newEmptySplitDiff()
         let right: DiffLine = newEmptySplitDiff()
 
-        const highlightCode = getHighlightCode(language, line)
         if (curType === DiffType.EQUAL) {
           delNum++
           addNum++
 
-          left = newSplitDiff(DiffType.EQUAL, delNum, highlightCode)
-          right = newSplitDiff(DiffType.EQUAL, addNum, highlightCode)
+          left = newSplitDiff(DiffType.EQUAL, delNum, line)
+          right = newSplitDiff(DiffType.EQUAL, addNum, line)
         }
         if (curType === DiffType.DELETE) {
           delNum++
 
-          left = newSplitDiff(DiffType.DELETE, delNum, highlightCode)
+          left = newSplitDiff(DiffType.DELETE, delNum, line)
           right = newEmptySplitDiff()
         }
         if (curType === DiffType.ADD) {
           addNum++
 
           left = newEmptySplitDiff()
-          right = newSplitDiff(DiffType.ADD, addNum, highlightCode)
+          right = newSplitDiff(DiffType.ADD, addNum, line)
         }
         rawChanges.push({ left, right })
       }
@@ -256,10 +291,9 @@ export function createSplitDiff(
         delNum++
         addNum++
 
-        const highlightCode = getHighlightCode(language, line)
         rawChanges.push({
-          left: newSplitDiff(DiffType.EQUAL, delNum, highlightCode),
-          right: newSplitDiff(DiffType.EQUAL, addNum, highlightCode),
+          left: newSplitDiff(DiffType.EQUAL, delNum, line),
+          right: newSplitDiff(DiffType.EQUAL, addNum, line),
         })
       }
     }
@@ -272,7 +306,7 @@ export function createSplitDiff(
           delNum++
 
           rawChanges.push({
-            left: newSplitDiff(DiffType.DELETE, delNum, getHighlightCode(language, line)),
+            left: newSplitDiff(DiffType.DELETE, delNum, line),
             right: newEmptySplitDiff(),
           })
         }
@@ -298,11 +332,11 @@ export function createSplitDiff(
 
           const left
             = j < cur.count!
-              ? newSplitDiff(leftDiffType, delNum, getHighlightCode(language, leftLine))
+              ? newSplitDiff(leftDiffType, delNum, leftLine)
               : newEmptySplitDiff()
           const right
             = j < next.count!
-              ? newSplitDiff(rightDiffType, addNum, getHighlightCode(language, rightLine))
+              ? newSplitDiff(rightDiffType, addNum, rightLine)
               : newEmptySplitDiff()
 
           rawChanges.push({ left, right })
@@ -315,15 +349,17 @@ export function createSplitDiff(
         addNum++
         rawChanges.push({
           left: newEmptySplitDiff(),
-          right: newSplitDiff(DiffType.ADD, addNum, getHighlightCode(language, line)),
+          right: newSplitDiff(DiffType.ADD, addNum, line),
         })
       }
     }
   }
 
   if (oldString === newString) {
-    for (let i = 0; i < rawChanges.length; i++)
+    for (let i = 0; i < rawChanges.length; i++) {
       rawChanges[i].fold = false
+      highlightSplitLine(rawChanges[i], language)
+    }
 
     return result
   }
@@ -370,6 +406,7 @@ export function createSplitDiff(
     unchanges = []
   }
   result.changes = processedChanges
+  result.changes.filter(line => !line.hide).forEach(line => highlightSplitLine(line, language))
 
   return result
 }
@@ -421,11 +458,9 @@ export function createUnifiedDiff(
         if (curType === DiffType.ADD)
           addNum++
 
-        const code = getHighlightCode(language, line)
-
         rawChanges.push({
           type: curType,
-          code,
+          code: line,
           addNum: curType === DiffType.DELETE ? undefined : addNum,
           delNum: curType === DiffType.ADD ? undefined : delNum,
         })
@@ -439,9 +474,7 @@ export function createUnifiedDiff(
       for (const line of curLines) {
         delNum++
         addNum++
-        const code = getHighlightCode(language, line)
-
-        rawChanges.push({ type: DiffType.EQUAL, code, delNum, addNum })
+        rawChanges.push({ type: DiffType.EQUAL, code: line, delNum, addNum })
       }
     }
 
@@ -455,10 +488,9 @@ export function createUnifiedDiff(
           const nextLine = nextLines[j]
           delNum++
 
-          const code = getHighlightCode(language, renderWords(nextLine, curLine, diffStyle))
           rawChanges.push({
             type: ignoreRegex?.test(curLine) ? DiffType.EQUAL : DiffType.DELETE,
-            code,
+            code: renderWords(nextLine, curLine, diffStyle),
             delNum,
           })
         }
@@ -468,10 +500,9 @@ export function createUnifiedDiff(
           const nextLine = nextLines[j]
           addNum++
 
-          const code = getHighlightCode(language, renderWords(curLine, nextLine, diffStyle))
           rawChanges.push({
             type: ignoreRegex?.test(nextLine) ? DiffType.EQUAL : DiffType.ADD,
-            code,
+            code: renderWords(curLine, nextLine, diffStyle),
             addNum,
           })
         }
@@ -483,8 +514,7 @@ export function createUnifiedDiff(
         for (const line of curLines) {
           delNum++
 
-          const code = getHighlightCode(language, line)
-          rawChanges.push({ type: DiffType.DELETE, code, delNum })
+          rawChanges.push({ type: DiffType.DELETE, code: line, delNum })
         }
       }
     }
@@ -492,9 +522,7 @@ export function createUnifiedDiff(
     if (curType === DiffType.ADD) {
       for (const line of curLines) {
         addNum++
-        const code = getHighlightCode(language, line)
-
-        rawChanges.push({ type: DiffType.ADD, code, addNum })
+        rawChanges.push({ type: DiffType.ADD, code: line, addNum })
       }
     }
   }
@@ -511,8 +539,10 @@ export function createUnifiedDiff(
   }
 
   if (oldString === newString) {
-    for (let i = 0; i < rawChanges.length; i++)
+    for (let i = 0; i < rawChanges.length; i++) {
       rawChanges[i].fold = false
+      highlightUnifiedLine(rawChanges[i], language)
+    }
 
     return result
   }
@@ -551,6 +581,7 @@ export function createUnifiedDiff(
     unchanges = []
   }
   result.changes = processedChanges
+  result.changes.filter(line => !line.hide).forEach(line => highlightUnifiedLine(line, language))
 
   return result
 }

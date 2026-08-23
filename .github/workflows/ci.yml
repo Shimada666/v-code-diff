@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - id: pack
+        run: echo "tarball=$(npm pack --ignore-scripts --silent)" >> "$GITHUB_OUTPUT"
+      - run: node tests/package-smoke.mjs "${{ steps.pack.outputs.tarball }}" 2.6.14 v-code-diff/vue2
+      - run: node tests/package-smoke.mjs "${{ steps.pack.outputs.tarball }}" 2.7.16 v-code-diff/vue2.7
+      - run: node tests/package-smoke.mjs "${{ steps.pack.outputs.tarball }}" 3.5.20 v-code-diff/vue3

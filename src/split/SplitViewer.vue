@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import type { SplitLineChange, SplitViewerChange } from '../types'
+import { highlightSplitLine } from '../utils'
 import SplitLine from './SplitLine.vue'
 
 const props = defineProps<{
   diffChange: SplitViewerChange
+  language: string
 }>()
 
 function expandHandler({ hideIndex }: SplitLineChange) {
   if (hideIndex === undefined)
     return
   props.diffChange.collector[hideIndex!].lines.forEach((line) => {
+    highlightSplitLine(line, props.language)
     line.hide = false
     line.fold = false
   })
