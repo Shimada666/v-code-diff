@@ -25,7 +25,7 @@ function getCodeMarker(type: DiffType) {
       ⋯
     </td>
   </tr>
-  <tr v-else-if="!line.hide">
+  <tr v-else-if="!line.hide" :data-diff-change="line.type !== DiffType.EQUAL ? '' : undefined">
     <td
       class="blob-num"
       :class="{

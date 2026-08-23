@@ -16,9 +16,10 @@ function getCodeMarker(type: DiffType) {
   return ''
 }
 
-function onSplitLineMousedown(side: 'left' | 'right') {
-  const leftElements = document.querySelectorAll('.file-diff-split .split-side-left')!
-  const rightElements = document.querySelectorAll('.file-diff-split .split-side-right')!
+function onSplitLineMousedown(event: MouseEvent, side: 'left' | 'right') {
+  const table = (event.currentTarget as HTMLElement).closest('.file-diff-split')!
+  const leftElements = table.querySelectorAll('.split-side-left')
+  const rightElements = table.querySelectorAll('.split-side-right')
 
   for (const el of rightElements)
     el.classList.toggle('no-select', side === 'left')
@@ -37,7 +38,10 @@ function onSplitLineMousedown(side: 'left' | 'right') {
       ⋯
     </td>
   </tr>
-  <tr v-else-if="!splitLine.hide">
+  <tr
+    v-else-if="!splitLine.hide"
+    :data-diff-change="splitLine.left.type === DiffType.DELETE || splitLine.right.type === DiffType.ADD ? '' : undefined"
+  >
     <template v-for="(line, index) in [splitLine.left, splitLine.right]">
       <!-- eslint-disable -->
       <template v-if="line.type === DiffType.EMPTY">
@@ -66,7 +70,7 @@ function onSplitLineMousedown(side: 'left' | 'right') {
             'split-side-left': index === 0,
             'split-side-right': index === 1,
           }"
-          @mousedown="onSplitLineMousedown(index === 0 ? 'left' : 'right')"
+          @mousedown="onSplitLineMousedown($event, index === 0 ? 'left' : 'right')"
         >
           <span
             class="blob-code-inner blob-code-marker" :data-code-marker="getCodeMarker(line.type)"

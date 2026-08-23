@@ -81,9 +81,10 @@ const diffChange = ref(raw.value)
 const isNotChanged = computed(() => diffChange.value.stat.additionsNum === 0 && diffChange.value.stat.deletionsNum === 0)
 
 const currentDiffIndex = ref(-1)
+const root = ref<HTMLElement>()
 
 function goToNextDiff() {
-  const diffs = document.querySelectorAll('.blob-code-addition')
+  const diffs = root.value!.querySelectorAll('[data-diff-change]')
   if (currentDiffIndex.value < diffs.length - 1) {
     currentDiffIndex.value++
     updateCurrentDiffHighlight(diffs)
@@ -91,7 +92,7 @@ function goToNextDiff() {
 }
 
 function goToPrevDiff() {
-  const diffs = document.querySelectorAll('.blob-code-addition')
+  const diffs = root.value!.querySelectorAll('[data-diff-change]')
   if (currentDiffIndex.value > 0) {
     currentDiffIndex.value--
     updateCurrentDiffHighlight(diffs)
@@ -99,17 +100,18 @@ function goToPrevDiff() {
 }
 
 function updateCurrentDiffHighlight(diffs: NodeListOf<Element>) {
-  diffs.forEach((diff: { classList: { remove: (arg0: string) => any } }) => diff.classList.remove('current-diff'))
+  root.value!.querySelectorAll('.current-diff').forEach(diff => diff.classList.remove('current-diff'))
 
   const currentDiff = diffs[currentDiffIndex.value]
 
   if (currentDiff) {
-    currentDiff.classList.add('current-diff')
+    currentDiff.querySelectorAll('.blob-code').forEach(diff => diff.classList.add('current-diff'))
     currentDiff.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 }
 
 watch(() => props, () => {
+  currentDiffIndex.value = -1
   diffChange.value = raw.value
   emits('diff', {
     stat: {
@@ -122,7 +124,7 @@ watch(() => props, () => {
 </script>
 
 <template>
-  <div class="code-diff-view" :theme="theme" :style="{ maxHeight }">
+  <div ref="root" class="code-diff-view" :theme="theme" :style="{ maxHeight }">
     <div v-if="!hideHeader" class="file-header">
       <!--  line by line -->
       <div v-if="isUnifiedViewer" class="file-info">
