@@ -4,3 +4,13 @@ packages:
   - vue2.7-playground
   - demo
   - common
+
+allowBuilds:
+  core-js: true
+  esbuild: true
+  vue-demi: true
+
+packageExtensions:
+  vue-template-compiler:
+    peerDependencies:
+      vue: ~2.6.14

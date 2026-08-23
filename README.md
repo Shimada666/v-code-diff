@@ -7,7 +7,7 @@
 > A code diff display plugin, available for Vue2 / Vue3.
 
 <p align='center'>
-<b>English</b> | <a href="https://github.com/Shimada666/v-code-diff/blob/master/README-zh.md">简体中文</a>
+<b>English</b> | <a href="https://github.com/Shimada666/v-code-diff/blob/main/README-zh.md">简体中文</a>
 </p>
 
 Old Version:

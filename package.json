@@ -2,6 +2,7 @@
   "name": "v-code-diff",
   "type": "module",
   "version": "1.13.1",
+  "packageManager": "pnpm@11.2.2",
   "description": "template component for vue-demi, can dev and build",
   "license": "MIT",
   "exports": {
@@ -76,14 +77,5 @@
     "vue-tsc": "^0.40.13",
     "vue2": "npm:vue@2",
     "vue3": "npm:vue@3"
-  },
-  "pnpm": {
-    "packageExtensions": {
-      "vue-template-compiler": {
-        "peerDependencies": {
-          "vue": "~2.6.14"
-        }
-      }
-    }
   }
 }

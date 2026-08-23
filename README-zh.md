@@ -7,7 +7,7 @@
 > Vue2 / Vue3 可用的 code diff 插件
 
 <p align='center'>
-<a href="https://github.com/Shimada666/v-code-diff/blob/master/README.md">English</a> | <b>简体中文</b>
+<a href="https://github.com/Shimada666/v-code-diff/blob/main/README.md">English</a> | <b>简体中文</b>
 </p>
 
 旧版本：
