@@ -53,6 +53,29 @@ it('renders an added final newline as its own empty line', () => {
   expect(split.stat).toEqual(unified.stat)
 })
 
+it('keeps a shared first line unchanged when the new text adds another line', () => {
+  const oldString = 'const a = 2;'
+  const newString = 'const a = 2;\nlet b = 3;'
+  const unified = createUnifiedDiff(oldString, newString)
+  const split = createSplitDiff(oldString, newString)
+
+  expect(unified.changes.map(line => [line.type, line.code])).toEqual([
+    [DiffType.EQUAL, 'const a = 2;'],
+    [DiffType.ADD, 'let b = 3;'],
+  ])
+  expect(split.changes.map(line => [line.left.type, line.right.type])).toEqual([
+    [DiffType.EQUAL, DiffType.EQUAL],
+    [DiffType.EMPTY, DiffType.ADD],
+  ])
+  expect(unified.stat).toEqual({
+    additionsNum: 1,
+    deletionsNum: 0,
+    ignoreAdditionsNum: 0,
+    ignoreDeletionsNum: 0,
+  })
+  expect(split.stat).toEqual(unified.stat)
+})
+
 it('handles pure additions, pure deletions, and unequal replacements', () => {
   const cases = [
     ['', 'one\ntwo', 2, 0],

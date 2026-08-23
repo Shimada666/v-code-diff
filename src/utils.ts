@@ -74,6 +74,11 @@ function diffLines(prev: string, current: string) {
       current = current.slice(0, -1)
   }
 
+  if (prev)
+    prev += '\n'
+  if (current)
+    current += '\n'
+
   let changes: Diff.Change[] | undefined
   if (prev.length + current.length >= 100_000 && prev.includes('\n') && current.includes('\n')) {
     const prevLines = prev ? prev.replace(/\n$/, '').split('\n') : []

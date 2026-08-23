@@ -56,7 +56,9 @@
     "postinstall": "node scripts/postinstall.cjs",
     "prepublishOnly": "npm run build",
     "release": "bumpp --commit --no-push --tag && npm publish",
-    "test": "vitest run"
+    "test": "run-s test:unit test:types",
+    "test:types": "tsc --noEmit --skipLibCheck --module ESNext --moduleResolution node --target ES2020 tests/types.test-d.ts",
+    "test:unit": "vitest run"
   },
   "peerDependencies": {
     "@vue/composition-api": "^1.4.9",
