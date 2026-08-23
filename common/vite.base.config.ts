@@ -31,6 +31,9 @@ export const baseBuildConfig = defineConfig({
           '@vue/composition-api/dist/vue-composition-api.mjs':
             'VueCompositionAPI',
         },
+        paths: {
+          '@vue/composition-api/dist/vue-composition-api.mjs': '@vue/composition-api',
+        },
       },
     },
   },
