@@ -11,6 +11,17 @@ const MODIFIED_CLOSE_TAG = '</code-diff-modified>'
 const startEntity = MODIFIED_START_TAG.replace('<', '&lt;').replace('>', '&gt;')
 const closeEntity = MODIFIED_CLOSE_TAG.replace('<', '&lt;').replace('>', '&gt;')
 
+function escapeHtml(code: string): string {
+  const entities: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '\'': '&#39;',
+  }
+  return code.replace(/[&<>"']/g, char => entities[char])
+}
+
 function lineType(diff: Diff.Change): DiffType {
   if (diff === undefined)
     return DiffType.EQUAL
@@ -59,8 +70,11 @@ function diffLines(prev: string, current: string) {
 }
 
 function getHighlightCode(language: string, code: string) {
-  if (typeof document === 'undefined')
-    return code
+  if (typeof document === 'undefined') {
+    return escapeHtml(code)
+      .replace(new RegExp(startEntity, 'g'), '<span class="x">')
+      .replace(new RegExp(closeEntity, 'g'), '</span>')
+  }
 
   const hasModifiedTags = code.match(new RegExp(`(${MODIFIED_START_TAG}|${MODIFIED_CLOSE_TAG})`, 'g'))
 
