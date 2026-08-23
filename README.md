@@ -47,15 +47,18 @@ yarn add v-code-diff
 pnpm add v-code-diff
 ```
 
-> ⚠️ Important: If you are using pnpm 10.x, you need to add the following configuration to your package.json:
-> ```json
-> {
->   "pnpm": {
->     "onlyBuiltDependencies": ["v-code-diff"]
->   }
-> }
-> ```
-> This is because pnpm 10.x blocks postinstall scripts by default, while v-code-diff relies on postinstall scripts to select the appropriate build artifacts for Vue version compatibility. For more details, see [pnpm/pnpm#8897](https://github.com/pnpm/pnpm/pull/8897).
+Use the explicit entry for your Vue version. These entries do not depend on
+`postinstall`, so they also work when the package manager blocks dependency
+scripts:
+
+| Vue version | Import path |
+| --- | --- |
+| Vue 2.6 | `v-code-diff/vue2` |
+| Vue 2.7 | `v-code-diff/vue2.7` |
+| Vue 3 | `v-code-diff/vue3` |
+
+The legacy `v-code-diff` root entry remains available when dependency scripts
+are enabled.
 
 Vue2.6 developers need install composition-api
 
@@ -71,7 +74,7 @@ pnpm add @vue/composition-api
 > Recommend using local registration for better tree-shaking support.
 ```vue
 <script setup>
-import { CodeDiff } from 'v-code-diff'
+import { CodeDiff } from 'v-code-diff/vue3'
 </script>
 
 <template>
@@ -89,7 +92,7 @@ import { CodeDiff } from 'v-code-diff'
 
 ```ts
 import { createApp } from 'vue'
-import CodeDiff from 'v-code-diff'
+import CodeDiff from 'v-code-diff/vue3'
 
 app
   .use(CodeDiff)
@@ -114,7 +117,8 @@ then
 > Recommend using local registration for better tree-shaking support.
 ```vue
 <script>
-import { CodeDiff } from 'v-code-diff'
+// Use v-code-diff/vue2.7 instead when running Vue 2.7.
+import { CodeDiff } from 'v-code-diff/vue2'
 export default {
   components: {
     CodeDiff
@@ -135,7 +139,8 @@ export default {
 #### Register globally
 ```ts
 import Vue from 'vue'
-import CodeDiff from 'v-code-diff'
+// Use v-code-diff/vue2.7 instead when running Vue 2.7.
+import CodeDiff from 'v-code-diff/vue2'
 
 Vue.use(CodeDiff)
 ```

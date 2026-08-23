@@ -1,21 +1,18 @@
-const fs = require('fs')
-const { switchVersion, loadModule } = require('./utils.cjs')
+const fs = require('node:fs')
+const { switchVersion } = require('./utils.cjs')
 
-const Vue = loadModule('vue')
-
-if (fs.existsSync('.local'))
+if (fs.existsSync('.local')) {
   console.log('Currently, it is the local development environment, not doing anything.')
+}
+else {
+  const { version } = require('vue')
 
-else if (!Vue || typeof Vue.version !== 'string')
-  console.warn('[v-code-diff] Vue is not found. Please run "npm install vue" to install.')
-
-else if (Vue.version.startsWith('2.7.'))
-  switchVersion('2.7')
-
-else if (Vue.version.startsWith('2.'))
-  switchVersion('2')
-
-else if (Vue.version.startsWith('3.'))
-  switchVersion('3')
-
-else console.warn(`[v-code-diff] Vue version v${Vue.version} is not suppported.`)
+  if (version.startsWith('2.7.'))
+    switchVersion('2.7')
+  else if (version.startsWith('2.'))
+    switchVersion('2')
+  else if (version.startsWith('3.'))
+    switchVersion('3')
+  else
+    throw new Error(`[v-code-diff] Vue version v${version} is not supported.`)
+}

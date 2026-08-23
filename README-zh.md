@@ -48,15 +48,16 @@ yarn add v-code-diff
 pnpm add v-code-diff
 ```
 
-> ⚠️ 重要提示：如果你使用 pnpm 10.x 版本，需要在 package.json 中添加以下配置：
-> ```json
-> {
->   "pnpm": {
->     "onlyBuiltDependencies": ["v-code-diff"]
->   }
-> }
-> ```
-> 这是因为 pnpm 10.x 默认会阻止 postinstall 脚本运行，而 v-code-diff 需要依赖 postinstall 脚本来选择适配 Vue 版本的构建产物。详情可见 [pnpm/pnpm#8897](https://github.com/pnpm/pnpm/pull/8897)。
+请按 Vue 版本使用明确入口。这些入口不依赖 `postinstall`，包管理器禁止执行
+依赖脚本时也能正常使用：
+
+| Vue 版本 | 引入路径 |
+| --- | --- |
+| Vue 2.6 | `v-code-diff/vue2` |
+| Vue 2.7 | `v-code-diff/vue2.7` |
+| Vue 3 | `v-code-diff/vue3` |
+
+依赖脚本已启用时，原有的 `v-code-diff` 根入口仍可继续使用。
 
 Vue2.6 及以下用户需要额外安装 composition-api
 
@@ -72,7 +73,7 @@ pnpm add @vue/composition-api
 > 推荐使用，因为对 tree-shaking 有更好的支持。
 ```vue
 <script setup>
-import { CodeDiff } from 'v-code-diff'
+import { CodeDiff } from 'v-code-diff/vue3'
 </script>
 
 <template>
@@ -90,7 +91,7 @@ import { CodeDiff } from 'v-code-diff'
 
 ```ts
 import { createApp } from 'vue'
-import CodeDiff from 'v-code-diff'
+import CodeDiff from 'v-code-diff/vue3'
 
 app.use(CodeDiff).mount('#app')
 ```
@@ -113,7 +114,8 @@ app.use(CodeDiff).mount('#app')
 > 推荐使用，因为对 tree-shaking 有更好的支持。
 ```vue
 <script>
-import { CodeDiff } from 'v-code-diff'
+// Vue 2.7 请改用 v-code-diff/vue2.7。
+import { CodeDiff } from 'v-code-diff/vue2'
 export default {
   components: {
     CodeDiff
@@ -134,7 +136,8 @@ export default {
 #### 注册为全局组件
 ```ts
 import Vue from 'vue'
-import CodeDiff from 'v-code-diff'
+// Vue 2.7 请改用 v-code-diff/vue2.7。
+import CodeDiff from 'v-code-diff/vue2'
 
 Vue.use(CodeDiff)
 ```

@@ -21,7 +21,7 @@ export const baseBuildConfig = defineConfig({
       entry: path.resolve(__dirname, umd ? '../src/global.ts' : '../src/index.ts'),
       formats: umd ? ['umd'] : ['es', 'cjs'],
       name: 'CodeDiff',
-      fileName: format => `${outputName}.${format}.js`,
+      fileName: format => format === 'cjs' ? `${outputName}.cjs` : `${outputName}.${format}.js`,
     },
     rollupOptions: {
       external: ['vue', '@vue/composition-api/dist/vue-composition-api.mjs'],

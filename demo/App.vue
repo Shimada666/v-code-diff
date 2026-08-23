@@ -3,8 +3,6 @@ import { version } from 'vue-demi'
 import { reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import oldShortText from './text/old-short-text.txt?raw'
-import newShortText from './text/new-short-text.txt?raw'
 import oldLongText from './text/old-long-text.txt?raw'
 import newLongText from './text/new-long-text.txt?raw'
 

@@ -3,13 +3,28 @@
   "type": "module",
   "version": "1.13.1",
   "packageManager": "pnpm@11.2.2",
-  "description": "template component for vue-demi, can dev and build",
+  "description": "A code diff viewer for Vue 2.6, Vue 2.7, and Vue 3",
   "license": "MIT",
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
       "import": "./dist/index.es.js",
-      "require": "./dist/index.cjs.js"
+      "require": "./dist/index.cjs"
+    },
+    "./vue2": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/v2/index.es.js",
+      "require": "./dist/v2/index.cjs"
+    },
+    "./vue2.7": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/v2.7/index.es.js",
+      "require": "./dist/v2.7/index.cjs"
+    },
+    "./vue3": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/v3/index.es.js",
+      "require": "./dist/v3/index.cjs"
     }
   },
   "main": "dist/index.cjs",
