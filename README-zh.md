@@ -94,8 +94,8 @@ import { CodeDiff } from 'v-code-diff'
 
 ```ts
 import { createApp } from 'vue'
-import App from './App.vue'
 import CodeDiff from 'v-code-diff'
+import App from './App.vue'
 
 createApp(App).use(CodeDiff).mount('#app')
 ```
@@ -222,8 +222,8 @@ export default {
 <template>
   <div>
     <CodeDiff
-      :old-string="'#include <stdio.h>'"
-      :new-string="'#include <stdio.h>\nint a = 1;'"
+      old-string="#include <stdio.h>"
+      new-string="#include <stdio.h>\nint a = 1;"
       output-format="side-by-side"
       language="c"
     />
