@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue-demi'
+import { computed, ref, shallowRef, watch } from 'vue-demi'
 import { createSplitDiff, createUnifiedDiff } from './utils'
 import UnifiedViewer from './unified/UnifiedViewer.vue'
 import SplitViewer from './split/SplitViewer.vue'
@@ -77,7 +77,7 @@ const raw = computed(() =>
     ? createUnifiedDiff(oldString.value, newString.value, props.language, props.diffStyle, props.forceInlineComparison, props.context, props.ignoreMatchingLines)
     : createSplitDiff(oldString.value, newString.value, props.language, props.diffStyle, props.forceInlineComparison, props.context, props.ignoreMatchingLines),
 )
-const diffChange = ref(raw.value)
+const diffChange = shallowRef(raw.value)
 const isNotChanged = computed(() => diffChange.value.stat.additionsNum === 0 && diffChange.value.stat.deletionsNum === 0)
 
 const currentDiffIndex = ref(-1)

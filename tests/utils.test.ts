@@ -131,3 +131,49 @@ it('defers highlighting folded lines until expansion', () => {
   expect(splitHidden.left.code).toBe('&lt;hidden&gt;')
   expect(splitHidden.right.code).toBe('&lt;hidden&gt;')
 })
+
+it('defers highlighting beyond the first render batch', () => {
+  const newString = Array.from({ length: 1_001 }, (_, index) => `<line ${index}>`).join('\n')
+  const unified = createUnifiedDiff('', newString)
+  const deferredLine = unified.changes[1_000]
+
+  expect(unified.changes[999].highlighted).toBe(true)
+  expect(deferredLine.highlighted).toBeUndefined()
+  expect(deferredLine.code).toBe('<line 1000>')
+  highlightUnifiedLine(deferredLine, 'plaintext')
+  expect(deferredLine.code).toBe('&lt;line 1000&gt;')
+})
+
+it('skips expensive inline comparison for long lines unless forced', () => {
+  const surroundingText = 'same '.repeat(2_200)
+  const oldString = `${surroundingText}old${surroundingText}`
+  const newString = `${surroundingText}new${surroundingText}`
+
+  expect(createUnifiedDiff(oldString, newString).changes.every(line => !line.code.includes('class="x"'))).toBe(true)
+  expect(createUnifiedDiff(oldString, newString, 'plaintext', 'word', true).changes.some(line => line.code.includes('class="x"'))).toBe(true)
+})
+
+it('supports forced inline comparison with unequal replacement line counts', () => {
+  for (const [oldString, newString] of [
+    ['old', 'new\nextra'],
+    ['old\nextra', 'new'],
+  ]) {
+    const unified = createUnifiedDiff(oldString, newString, 'plaintext', 'word', true)
+    expect(unified.stat.additionsNum).toBe(newString.split('\n').length)
+    expect(unified.stat.deletionsNum).toBe(oldString.split('\n').length)
+  }
+})
+
+it('keeps sparse diffs correct beyond diff-match-patch line limits', () => {
+  const oldLines = Array.from({ length: 40_001 }, (_, index) => `line ${index}`)
+  const newLines = [...oldLines]
+  newLines[20_000] = 'line changed'
+
+  const unified = createUnifiedDiff(oldLines.join('\n'), newLines.join('\n'), 'plaintext', 'word', false, 1)
+  expect(unified.stat.additionsNum).toBe(1)
+  expect(unified.stat.deletionsNum).toBe(1)
+  expect(unified.changes.filter(line => line.type !== DiffType.EQUAL).map(line => line.code)).toEqual([
+    'line <span class="x">20000</span>',
+    'line <span class="x">changed</span>',
+  ])
+})

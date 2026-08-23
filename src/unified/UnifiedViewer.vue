@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { computed, ref, shallowRef, watch } from 'vue-demi'
 import type { UnifiedLineChange, UnifiedViewerChange } from '../types'
-import { highlightUnifiedLine } from '../utils'
+import { RENDER_BATCH_SIZE, highlightUnifiedLine } from '../utils'
 import UnifiedLine from './UnifiedLine.vue'
 
 const props = defineProps<{
@@ -8,21 +9,49 @@ const props = defineProps<{
   language: string
 }>()
 
+const renderLimit = ref(RENDER_BATCH_SIZE)
+const visibleChanges = shallowRef(props.diffChange.changes.filter(line => !line.hide || line.hideIndex !== undefined))
+const renderedChanges = computed(() => visibleChanges.value.slice(0, renderLimit.value))
+const remainingLines = computed(() => visibleChanges.value.length - renderedChanges.value.length)
+const nextBatchSize = computed(() => Math.min(remainingLines.value, RENDER_BATCH_SIZE))
+
+watch(() => props.diffChange, (diffChange) => {
+  renderLimit.value = RENDER_BATCH_SIZE
+  visibleChanges.value = diffChange.changes.filter(line => !line.hide || line.hideIndex !== undefined)
+})
+
+function highlightRenderedChanges() {
+  renderedChanges.value.forEach(line => highlightUnifiedLine(line, props.language))
+}
+
 function expandHandler({ hideIndex }: UnifiedLineChange) {
   if (hideIndex === undefined)
     return
-  props.diffChange.collector[hideIndex!].lines.forEach((line) => {
-    highlightUnifiedLine(line, props.language)
+  props.diffChange.collector[hideIndex].lines.forEach((line) => {
     line.hide = false
     line.fold = false
   })
+  visibleChanges.value = props.diffChange.changes.filter(line => !line.hide || line.hideIndex !== undefined)
+  highlightRenderedChanges()
+}
+
+function loadMore() {
+  renderLimit.value += RENDER_BATCH_SIZE
+  highlightRenderedChanges()
 }
 </script>
 
 <template>
   <table class="diff-table">
     <tbody>
-      <UnifiedLine v-for="(item, index) in diffChange?.changes" :key="index" :line="item" @expand="expandHandler" />
+      <UnifiedLine v-for="(item, index) in renderedChanges" :key="index" :line="item" @expand="expandHandler" />
+      <tr v-if="remainingLines">
+        <td class="blob-code blob-code-hunk load-more" colspan="3">
+          <button class="load-more-button" type="button" @click="loadMore">
+            Show next {{ nextBatchSize }} lines ({{ remainingLines }} remaining)
+          </button>
+        </td>
+      </tr>
     </tbody>
   </table>
 </template>

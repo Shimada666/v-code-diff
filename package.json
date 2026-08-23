@@ -37,6 +37,7 @@
     "types"
   ],
   "scripts": {
+    "benchmark": "pnpm build:3 && vitest bench --run && node --expose-gc benchmarks/render.mjs",
     "build": "npm run clean && run-s build:**",
     "build:2": "vue-demi-switch 2 vue2 && pnpm --filter vue2-playground build",
     "build:2:umd": "vue-demi-switch 2 vue2 && format=umd pnpm --filter vue2-playground build",

@@ -168,6 +168,24 @@
     .blob-code-hunk {
       background-color: var(--color-accent-subtle);
     }
+
+    .load-more {
+      padding: 8px;
+      text-align: center;
+    }
+
+    .load-more-button {
+      padding: 4px 12px;
+      color: var(--color-accent-fg);
+      background: transparent;
+      border: 1px solid var(--color-border-default);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .load-more-button:hover {
+      background-color: var(--color-accent-muted);
+    }
   }
 
   .file-diff-split {

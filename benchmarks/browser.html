@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>v-code-diff browser benchmark</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <output id="result">running</output>
+    <script src="../node_modules/vue/dist/vue.global.prod.js"></script>
+    <script src="../dist/v3/index.umd.js"></script>
+    <script>
+      const params = new URLSearchParams(location.search)
+      const lineCount = Number(params.get('lines') ?? 15000)
+      const language = params.has('json') ? 'json' : 'plaintext'
+      const lines = Array.from({ length: lineCount }, (_, index) => language === 'json' ? `{"key${index}": ${index}},` : `const value${index} = ${index}`)
+      const allChanged = params.has('all')
+      const identical = params.has('identical')
+      const changedLines = allChanged
+        ? lines.map((_, index) => language === 'json' ? `{"changed${index}": ${index}},` : `const changed${index} = ${index}`)
+        : [...lines]
+      if (!allChanged && !identical) {
+        const changedIndex = Math.floor(lineCount / 2)
+        changedLines[changedIndex] = language === 'json' ? `{"key${changedIndex}": "changed"},` : `const value${changedIndex} = "changed"`
+      }
+      const startedAt = performance.now()
+      const app = Vue.createApp({
+        data: () => ({ language, oldString: lines.join('\n'), newString: changedLines.join('\n') }),
+        mounted() {
+          const report = () => {
+            const result = `${(performance.now() - startedAt).toFixed(1)}ms, ${document.querySelectorAll('tr').length} rows`
+            document.querySelector('#result').textContent = result
+            document.body.dataset.result = result
+          }
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            if (params.has('load')) {
+              document.querySelector('.load-more-button').click()
+              Vue.nextTick(report)
+            }
+            else {
+              report()
+            }
+          }))
+        },
+        template: '<CodeDiff :old-string="oldString" :new-string="newString" :language="language" :context="3" hide-header />',
+      })
+      app.use(CodeDiff).mount('#app')
+    </script>
+  </body>
+</html>

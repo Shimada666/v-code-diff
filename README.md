@@ -255,6 +255,9 @@ Key points:
 - In the 1.x version, due to the fact that rendering and highlighting are performed at the same time, the component
   events
   have been removed.
+- Large results render 1,000 lines at a time. Use the load-more control to reveal the next batch.
+- Inline word/character markers are skipped when a changed line pair exceeds 10,000 characters. Set
+  `force-inline-comparison` to keep detailed markers when the extra processing time is acceptable.
 - In the 1.x version, the following component properties (Prop) have been changed:
   - highlight - removed
   - drawFileList - removed

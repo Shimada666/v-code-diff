@@ -23,6 +23,7 @@ export interface DiffLine {
 
 export interface SplitLineChange {
   fold?: boolean
+  highlighted?: boolean
   left: DiffLine
   right: DiffLine
   hide?: boolean
@@ -31,6 +32,7 @@ export interface SplitLineChange {
 
 export interface UnifiedLineChange {
   fold?: boolean
+  highlighted?: boolean
   type: DiffType
   code: string
   delNum?: number
