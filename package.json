@@ -1,7 +1,7 @@
 {
   "name": "v-code-diff",
   "type": "module",
-  "version": "1.13.2",
+  "version": "1.14.0",
   "packageManager": "pnpm@11.2.2",
   "description": "A code diff viewer for Vue 2.6, Vue 2.7, and Vue 3",
   "license": "MIT",
