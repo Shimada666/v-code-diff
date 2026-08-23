@@ -28,6 +28,7 @@
   - [Vue3](#Vue3)
   - [Vue2](#Vue2)
 - [在线演示](#Demo)
+- [性能](#性能)
 - [组件属性](#组件属性)
 - [组件事件](#组件事件)
 - [扩展高亮语言](#扩展高亮语言)
@@ -151,6 +152,38 @@ Vue.use(CodeDiff)
 | vue2   |     | [vue2-cdn](https://stackblitz.com/edit/v-code-diff-vue2-cdn?file=index.html)   |
 | vue2.7 |     | [vue27-cdn](https://stackblitz.com/edit/v-code-diff-vue27-cdn?file=index.html) |
 | vue3   |     | [vue3-cdn](https://stackblitz.com/edit/v-code-diff-vue3-cdn?file=index.html)   |
+
+## 性能
+
+以下是 v1.16.0 在 Apple M4 Max、36 GB 内存、Node.js 24.15.0 和 Chrome 151 环境下的参考结果。测试使用 `language="plaintext"` 和 `context=3`。实际结果会因硬件和输入内容而异；10 万行数据仅用于压力测试，不代表组件承诺支持任意 10 万行文件。
+
+可以运行以下命令复现 diff 和 SSR 基准测试：
+
+```shell
+pnpm benchmark
+```
+
+| Diff 基准 | 中位耗时 |
+| --- | ---: |
+| 1.5 万行，内容相同 | 1.3 ms |
+| 1.5 万行，一处变化，line-by-line | 8.5 ms |
+| 1.5 万行，一处变化，side-by-side | 8.2 ms |
+| 1.5 万行，全部变化 | 37.9 ms |
+| 100 KB 单行 JSON，一处变化 | 0.9 ms |
+| 10 万行，一处变化 | 37.3 ms |
+| 4 万行，9% 发生变化 | 40.0 ms |
+
+Chrome 渲染结果以“渲染耗时 / 强制垃圾回收后的 JS 堆内存”表示：
+
+| 输入 | Line-by-line | Side-by-side |
+| --- | ---: | ---: |
+| 4,000 行，一处变化 | 14.3 ms / 4.1 MB | 13.7 ms / 4.3 MB |
+| 10,000 行，一处变化 | 15.6 ms / 5.4 MB | 18.3 ms / 5.8 MB |
+| 100,000 行，一处变化 | 60.2 ms / 25.9 MB | 59.2 ms / 29.8 MB |
+| 10,000 行，全部变化 | 68.9 ms / 10.6 MB | 87.7 ms / 12.8 MB |
+| 100,000 行，全部变化 | 243.5 ms / 52.7 MB | 261.4 ms / 53.9 MB |
+
+组件首次最多渲染 1,000 个可见行，后续批次按需加载和高亮。稳定性测试中，挂载状态下连续更新 1 万行对比 20 次，保留堆内存最多增长 0.2 MB；反复挂载和卸载 10 万行对比 5 次，没有出现保留内存增长。
 
 ## 组件属性
 

@@ -30,6 +30,7 @@ This project draws inspiration from the following projects. Thanks to their orig
 - [Props](#Props)
 - [Events](#Events)
 - [Demo](#Demo)
+- [Performance](#Performance)
 - [Extend languages](#extend-languages)
 - [Migrate from 0.x version](#Migrate-from-0x-version)
 
@@ -151,6 +152,38 @@ Vue.use(CodeDiff)
 | vue2   |     | [vue2-cdn](https://stackblitz.com/edit/v-code-diff-vue2-cdn?file=index.html)   |
 | vue2.7 |     | [vue27-cdn](https://stackblitz.com/edit/v-code-diff-vue27-cdn?file=index.html) |
 | vue3   |     | [vue3-cdn](https://stackblitz.com/edit/v-code-diff-vue3-cdn?file=index.html)   |
+
+## Performance
+
+Reference results for v1.16.0 on an Apple M4 Max with 36 GB RAM, Node.js 24.15.0, and Chrome 151. Tests used `language="plaintext"` and `context=3`. Results vary by hardware and input; the 100,000-line cases are stress tests, not a supported-size guarantee.
+
+Run the diff and SSR benchmarks with:
+
+```shell
+pnpm benchmark
+```
+
+| Diff benchmark | Median |
+| --- | ---: |
+| 15,000 identical lines | 1.3 ms |
+| 15,000 lines, one change, line-by-line | 8.5 ms |
+| 15,000 lines, one change, side-by-side | 8.2 ms |
+| 15,000 lines, all changed | 37.9 ms |
+| 100 KB single-line JSON, one change | 0.9 ms |
+| 100,000 lines, one change | 37.3 ms |
+| 40,000 lines, 9% changed | 40.0 ms |
+
+Chrome rendering results are shown as `render time / retained JS heap` after forced garbage collection:
+
+| Input | Line-by-line | Side-by-side |
+| --- | ---: | ---: |
+| 4,000 lines, one change | 14.3 ms / 4.1 MB | 13.7 ms / 4.3 MB |
+| 10,000 lines, one change | 15.6 ms / 5.4 MB | 18.3 ms / 5.8 MB |
+| 100,000 lines, one change | 60.2 ms / 25.9 MB | 59.2 ms / 29.8 MB |
+| 10,000 lines, all changed | 68.9 ms / 10.6 MB | 87.7 ms / 12.8 MB |
+| 100,000 lines, all changed | 243.5 ms / 52.7 MB | 261.4 ms / 53.9 MB |
+
+Rendering is limited to the first 1,000 visible lines, with later batches highlighted on demand. In a separate stability check, updating a mounted 10,000-line comparison 20 times changed retained heap by at most 0.2 MB; mounting and unmounting a 100,000-line comparison five times showed no retained growth.
 
 ## Props
 
