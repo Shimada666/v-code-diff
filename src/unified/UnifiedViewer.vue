@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { computed, ref, shallowRef, watch } from 'vue-demi'
-import type { UnifiedLineChange, UnifiedViewerChange } from '../types'
+import type { DiffChangeClickEvent, UnifiedLineChange, UnifiedViewerChange } from '../types'
 import { RENDER_BATCH_SIZE, highlightUnifiedLine } from '../utils'
 import UnifiedLine from './UnifiedLine.vue'
 
 const props = defineProps<{
   diffChange: UnifiedViewerChange
   language: string
+}>()
+
+const emit = defineEmits<{
+  (e: 'change-click', payload: DiffChangeClickEvent): void
 }>()
 
 const renderLimit = ref(RENDER_BATCH_SIZE)
@@ -44,7 +48,13 @@ function loadMore() {
 <template>
   <table class="diff-table">
     <tbody>
-      <UnifiedLine v-for="(item, index) in renderedChanges" :key="index" :line="item" @expand="expandHandler" />
+      <UnifiedLine
+        v-for="(item, index) in renderedChanges"
+        :key="index"
+        :line="item"
+        @expand="expandHandler"
+        @change-click="emit('change-click', $event)"
+      />
       <tr v-if="remainingLines">
         <td class="blob-code blob-code-hunk load-more" colspan="3">
           <button class="load-more-button" type="button" @click="loadMore">

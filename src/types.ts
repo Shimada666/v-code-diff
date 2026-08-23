@@ -21,6 +21,13 @@ export interface DiffLine {
   num?: number
 }
 
+export interface DiffChangeClickEvent {
+  side: 'old' | 'new'
+  type: DiffType.ADD | DiffType.DELETE
+  lineNumber: number
+  event: MouseEvent
+}
+
 export interface SplitLineChange {
   fold?: boolean
   highlighted?: boolean

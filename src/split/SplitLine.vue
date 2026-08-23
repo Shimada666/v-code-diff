@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { DiffType } from '../types'
-import type { SplitLineChange } from '../types'
+import type { DiffChangeClickEvent, DiffLine, SplitLineChange } from '../types'
 
 defineProps<{
   splitLine: SplitLineChange
 }>()
 
-const emit = defineEmits(['expand'])
+const emit = defineEmits<{
+  (e: 'expand', line: SplitLineChange): void
+  (e: 'change-click', payload: DiffChangeClickEvent): void
+}>()
 
 function getCodeMarker(type: DiffType) {
   if (type === DiffType.DELETE)
@@ -26,6 +29,20 @@ function onSplitLineMousedown(event: MouseEvent, side: 'left' | 'right') {
 
   for (const el of leftElements)
     el.classList.toggle('no-select', side === 'right')
+}
+
+function onChangeClick(event: MouseEvent, line: DiffLine, side: 'old' | 'new') {
+  if (line.type !== DiffType.ADD && line.type !== DiffType.DELETE)
+    return
+
+  // Vue 2 DOM templates require kebab-case event names.
+  // eslint-disable-next-line vue/custom-event-name-casing
+  emit('change-click', {
+    side,
+    type: line.type,
+    lineNumber: line.num!,
+    event,
+  })
 }
 </script>
 
@@ -71,6 +88,7 @@ function onSplitLineMousedown(event: MouseEvent, side: 'left' | 'right') {
             'split-side-right': index === 1,
           }"
           @mousedown="onSplitLineMousedown($event, index === 0 ? 'left' : 'right')"
+          @click="onChangeClick($event, line, index === 0 ? 'old' : 'new')"
         >
           <span
             class="blob-code-inner blob-code-marker" :data-code-marker="getCodeMarker(line.type)"

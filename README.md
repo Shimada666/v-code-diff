@@ -170,6 +170,7 @@ Vue.use(CodeDiff)
 | newFilename         | New filename                                                                                                                                                            | string    | -                         | undefined     |
 | hideHeader          | Hide header bar                                                                                                                                                         | boolean   | -                         | false         |
 | hideStat            | Hide statistical part in the header bar                                                                                                                                 | boolean   | -                         | false         |
+| hideNavigation      | Hide the next/previous change buttons                                                                                                                                   | boolean   | -                         | false         |
 | theme               | Add dark mode                                                                                                                                                           | ThemeType | light , dark              | light         |
 | ignoreMatchingLines | Give a pattern to ignore matching lines eg: '(time\|token)'                                                                                                             | string    | -                         | undefined     |
 
@@ -178,6 +179,7 @@ Vue.use(CodeDiff)
 | Name | Description                 | Type                                                                            |
 | ---- | --------------------------- | ------------------------------------------------------------------------------- |
 | diff | Emitted after the diff is calculated | (result: {stat: { isChanged: boolean, addNum: number, delNum: number}}) => void |
+| change-click | Emitted when an added or removed line is clicked | (payload: {side: 'old' \| 'new', type: 'added' \| 'removed', lineNumber: number, event: MouseEvent}) => void |
 
 ## Slot
 

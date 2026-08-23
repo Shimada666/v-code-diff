@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, shallowRef, watch } from 'vue-demi'
+import type { DiffChangeClickEvent } from './types'
 import { createSplitDiff, createUnifiedDiff } from './utils'
 import UnifiedViewer from './unified/UnifiedViewer.vue'
 import SplitViewer from './split/SplitViewer.vue'
@@ -23,6 +24,7 @@ interface Props {
   newFilename?: string
   hideHeader?: boolean
   hideStat?: boolean
+  hideNavigation?: boolean
   theme?: 'light' | 'dark'
   // Give a pattern to ignore matching lines eg: '(time|token)'
   ignoreMatchingLines?: string
@@ -41,12 +43,14 @@ const props = withDefaults(defineProps<Props>(), {
   newFilename: undefined,
   hideHeader: false,
   hideStat: false,
+  hideNavigation: false,
   theme: 'light',
   ignoreMatchingLines: undefined,
 })
 
 const emits = defineEmits<{
   (e: 'diff', diffResult: DiffResult): void
+  (e: 'change-click', payload: DiffChangeClickEvent): void
 }>()
 
 interface DiffResult {
@@ -132,7 +136,7 @@ watch(() => props, () => {
           <div class="info-left">{{ filename }}</div>
           <div class="info-left">{{ newFilename }}</div>
         </span>
-        <span class="diff-commandbar">
+        <span v-if="!hideNavigation" class="diff-commandbar">
           <button class="command-item-button" title="Next Change" @click="goToNextDiff">
             <DownArrowIcon />
           </button>
@@ -152,7 +156,7 @@ watch(() => props, () => {
         <span class="info-left">{{ filename }}</span>
         <span class="info-right">
           <span style="margin-left: 20px;">{{ newFilename }}</span>
-          <span class="diff-commandbar">
+          <span v-if="!hideNavigation" class="diff-commandbar">
             <button class="command-item-button" title="Next Change" @click="goToNextDiff">
               <DownArrowIcon />
             </button>
@@ -169,8 +173,8 @@ watch(() => props, () => {
         </span>
       </div>
     </div>
-    <UnifiedViewer v-if="isUnifiedViewer" :diff-change="diffChange" :language="language" />
-    <SplitViewer v-else :diff-change="diffChange" :language="language" />
+    <UnifiedViewer v-if="isUnifiedViewer" :diff-change="diffChange" :language="language" @change-click="emits('change-click', $event)" />
+    <SplitViewer v-else :diff-change="diffChange" :language="language" @change-click="emits('change-click', $event)" />
   </div>
 </template>
 

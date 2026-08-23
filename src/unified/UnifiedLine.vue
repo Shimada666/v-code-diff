@@ -1,11 +1,28 @@
 <script lang="ts" setup>
-import type { UnifiedLineChange } from '../types'
+import type { DiffChangeClickEvent, UnifiedLineChange } from '../types'
 import { DiffType } from '../types'
 
-defineProps<{
+const props = defineProps<{
   line: UnifiedLineChange
 }>()
-const emit = defineEmits(['expand'])
+const emit = defineEmits<{
+  (e: 'expand', line: UnifiedLineChange): void
+  (e: 'change-click', payload: DiffChangeClickEvent): void
+}>()
+
+function onChangeClick(event: MouseEvent) {
+  if (props.line.type !== DiffType.ADD && props.line.type !== DiffType.DELETE)
+    return
+
+  // Vue 2 DOM templates require kebab-case event names.
+  // eslint-disable-next-line vue/custom-event-name-casing
+  emit('change-click', {
+    side: props.line.type === DiffType.DELETE ? 'old' : 'new',
+    type: props.line.type,
+    lineNumber: props.line.type === DiffType.DELETE ? props.line.delNum! : props.line.addNum!,
+    event,
+  })
+}
 
 function getCodeMarker(type: DiffType) {
   if (type === DiffType.DELETE)
@@ -25,7 +42,7 @@ function getCodeMarker(type: DiffType) {
       ⋯
     </td>
   </tr>
-  <tr v-else-if="!line.hide" :data-diff-change="line.type !== DiffType.EQUAL ? '' : undefined">
+  <tr v-else-if="!line.hide" :data-diff-change="line.type !== DiffType.EQUAL ? '' : undefined" @click="onChangeClick">
     <td
       class="blob-num"
       :class="{

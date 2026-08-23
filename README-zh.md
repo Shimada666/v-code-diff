@@ -170,6 +170,7 @@ Vue.use(CodeDiff)
 | newFilename         | 新文件文件名                                                                                                             | string    | -                         | undefined    |
 | hideHeader          | 隐藏头部栏                                                                                                              | boolean   | -                         | false        |
 | hideStat            | 隐藏头部栏中的统计信息                                                                                                        | boolean   | -                         | false        |
+| hideNavigation      | 隐藏上一处/下一处差异按钮                                                                                                      | boolean   | -                         | false        |
 | theme               | 用于切换日间模式/夜间模式                                                                                                      | ThemeType | light , dark              | light        |
 | ignoreMatchingLines | 用于忽略匹配行的正则表达式，例如：'(time\|token)'                                                                                  | string    | -                         | undefined    |
 
@@ -178,6 +179,7 @@ Vue.use(CodeDiff)
 | Name | Description     | Type                                                                            |
 | ---- | --------------- | ------------------------------------------------------------------------------- |
 | diff | 差异计算完成后触发 | (result: {stat: { isChanged: boolean, addNum: number, delNum: number}}) => void |
+| change-click | 点击新增或删除行时触发 | (payload: {side: 'old' \| 'new', type: 'added' \| 'removed', lineNumber: number, event: MouseEvent}) => void |
 
 ## 组件插槽
 

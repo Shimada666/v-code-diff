@@ -16,6 +16,7 @@ export interface CodeDiffProps {
   newFilename?: string
   hideHeader?: boolean
   hideStat?: boolean
+  hideNavigation?: boolean
   theme?: 'light' | 'dark'
   ignoreMatchingLines?: string
 }
@@ -40,16 +41,24 @@ export interface DiffResult {
   }
 }
 
+export interface DiffChangeClickEvent {
+  side: 'old' | 'new'
+  type: 'added' | 'removed'
+  lineNumber: number
+  event: MouseEvent
+}
+
 export interface CodeDiffSlots {
   stat: (props: { stat: DiffStat }) => VNode[]
 }
 
 interface CodeDiffEmits {
   diff: (diffResult: DiffResult) => void
+  'change-click': (payload: DiffChangeClickEvent) => void
 }
 
 type Empty = Record<string, never>
-type CodeDiffComponent = DefineComponent<CodeDiffProps, Empty, Empty, Empty, Empty, Empty, Empty, CodeDiffEmits, 'diff'>
+type CodeDiffComponent = DefineComponent<CodeDiffProps, Empty, Empty, Empty, Empty, Empty, Empty, CodeDiffEmits, 'diff' | 'change-click'>
 
 export declare const CodeDiff: CodeDiffComponent & {
   new (): InstanceType<CodeDiffComponent> & { $slots: CodeDiffSlots }
