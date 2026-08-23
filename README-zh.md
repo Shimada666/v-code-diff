@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Downloads](https://img.shields.io/npm/dm/v-code-diff?minimal=true)](https://www.npmjs.com/package/v-code-diff)
 
-> Vue2 / Vue3 可用的 code diff 插件
+> 支持 Vue 2.6、Vue 2.7 和 Vue 3 的代码差异查看组件。
 
 <p align='center'>
 <a href="https://github.com/Shimada666/v-code-diff/blob/main/README.md">English</a> | <b>简体中文</b>
@@ -12,8 +12,8 @@
 
 旧版本：
 
-- 0.x 版本, 最新版本 0.3.12 (传统版本，基于 [vue-code-diff](https://github.com/ddchef/vue-code-diff) 进行改进，目前不再进行维护，我们会在
-  1.x 版本尽量对齐 0.x 版本功能，尽量降低迁移成本)
+- 0.x 的最后一个版本是 0.3.12，基于 [vue-code-diff](https://github.com/ddchef/vue-code-diff) 改进，现已停止维护。
+  1.x 尽量保留其核心功能，以降低迁移成本。
 
 本项目参考了以下项目，在此对原作者表示感谢！
 
@@ -30,7 +30,7 @@
 - [在线演示](#Demo)
 - [组件属性](#组件属性)
 - [组件事件](#组件事件)
-- [拓展高亮语言](#拓展高亮语言)
+- [扩展高亮语言](#扩展高亮语言)
 - [从 0.x 版本迁移](#从-0x-版本迁移)
 
 ## 安装
@@ -48,21 +48,24 @@ yarn add v-code-diff
 pnpm add v-code-diff
 ```
 
-请按 Vue 版本使用明确入口。这些入口不依赖 `postinstall`，包管理器禁止执行
-依赖脚本时也能正常使用：
+`v-code-diff` 通过 `postinstall` 选择与当前 Vue 版本匹配的构建产物，请勿使用 `--ignore-scripts` 安装。
+如果 pnpm 提示构建脚本被阻止，请执行：
 
-| Vue 版本 | 引入路径 |
-| --- | --- |
-| Vue 2.6 | `v-code-diff/vue2` |
-| Vue 2.7 | `v-code-diff/vue2.7` |
-| Vue 3 | `v-code-diff/vue3` |
+```shell
+pnpm approve-builds v-code-diff
+```
 
-依赖脚本已启用时，原有的 `v-code-diff` 根入口仍可继续使用。
-
-Vue2.6 及以下用户需要额外安装 composition-api
+Vue 2.6 用户还需要安装并注册 `@vue/composition-api`：
 
 ```shell
 pnpm add @vue/composition-api
+```
+
+```ts
+import Vue from 'vue'
+import VueCompositionAPI from '@vue/composition-api'
+
+Vue.use(VueCompositionAPI)
 ```
 
 ## 开始使用
@@ -73,7 +76,7 @@ pnpm add @vue/composition-api
 > 推荐使用，因为对 tree-shaking 有更好的支持。
 ```vue
 <script setup>
-import { CodeDiff } from 'v-code-diff/vue3'
+import { CodeDiff } from 'v-code-diff'
 </script>
 
 <template>
@@ -91,12 +94,13 @@ import { CodeDiff } from 'v-code-diff/vue3'
 
 ```ts
 import { createApp } from 'vue'
-import CodeDiff from 'v-code-diff/vue3'
+import App from './App.vue'
+import CodeDiff from 'v-code-diff'
 
-app.use(CodeDiff).mount('#app')
+createApp(App).use(CodeDiff).mount('#app')
 ```
 
-然后
+注册后即可在模板中使用：
 
 ```vue
 <template>
@@ -114,8 +118,7 @@ app.use(CodeDiff).mount('#app')
 > 推荐使用，因为对 tree-shaking 有更好的支持。
 ```vue
 <script>
-// Vue 2.7 请改用 v-code-diff/vue2.7。
-import { CodeDiff } from 'v-code-diff/vue2'
+import { CodeDiff } from 'v-code-diff'
 export default {
   components: {
     CodeDiff
@@ -136,8 +139,7 @@ export default {
 #### 注册为全局组件
 ```ts
 import Vue from 'vue'
-// Vue 2.7 请改用 v-code-diff/vue2.7。
-import CodeDiff from 'v-code-diff/vue2'
+import CodeDiff from 'v-code-diff'
 
 Vue.use(CodeDiff)
 ```
@@ -154,38 +156,38 @@ Vue.use(CodeDiff)
 
 | 参数                  | 说明                                                                                                                 | 类型        | 可选值                       | 默认值          |
 |---------------------|--------------------------------------------------------------------------------------------------------------------|-----------|---------------------------|--------------|
-| language            | 代码语言，如`typescript`，默认纯文本。 [查看全部支持语言](https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md) | string    | -                         | plaintext    |
+| language            | 代码高亮语言，例如 javascript，默认为纯文本                                                                                       | string    | -                         | plaintext    |
 | oldString           | 旧的字符串                                                                                                              | string    | -                         | -            |
 | newString           | 新的字符串                                                                                                              | string    | -                         | -            |
-| context             | 不同地方上下间隔多少行不隐藏                                                                                                     | number    | -                         | 10           |
-| outputFormat        | 展示方式                                                                                                               | string    | line-by-line，side-by-side | line-by-line |
-| diffStyle           | 差异风格, 单词级差异或字母级差异                                                                                                  | string    | word, char                | word         |
-|forceInlineComparison| 细分差异；存在差异时，强制进行行内对比（word 或 char 级）                                                                                | boolean   | -                         | false        |
+| context             | 每处差异前后显示的未变行数                                                                                                       | number    | -                         | 10           |
+| outputFormat        | 展示方式                                                                                                               | string    | line-by-line, side-by-side | line-by-line |
+| diffStyle           | 行内差异粒度：词级或字符级                                                                                                       | string    | word, char                | word         |
+| forceInlineComparison | 强制进行词级或字符级行内对比                                                                                                      | boolean   | -                         | false        |
 | trim                | 移除字符串前后空白字符                                                                                                        | boolean   | -                         | false        |
-| noDiffLineFeed      | 不 diff windows 换行符(CRLF)与 linux 换行符(LF)                                                                            | boolean   | -                         | false        |
+| noDiffLineFeed      | 比较前统一 Windows（CRLF）与 Unix（LF）换行符                                                                                | boolean   | -                         | false        |
 | maxHeight           | 组件最大高度，例如 300px                                                                                                    | string    | -                         | undefined    |
 | filename            | 文件名                                                                                                                | string    | -                         | undefined    |
 | newFilename         | 新文件文件名                                                                                                             | string    | -                         | undefined    |
 | hideHeader          | 隐藏头部栏                                                                                                              | boolean   | -                         | false        |
 | hideStat            | 隐藏头部栏中的统计信息                                                                                                        | boolean   | -                         | false        |
 | theme               | 用于切换日间模式/夜间模式                                                                                                      | ThemeType | light , dark              | light        |
-| ignoreMatchingLines | 给出一个模式来忽略匹配行，例如：'(time\|token)'                                                                                    | string    | -                         |              |
+| ignoreMatchingLines | 用于忽略匹配行的正则表达式，例如：'(time\|token)'                                                                                  | string    | -                         | undefined    |
 
 ## 组件事件
 
 | Name | Description     | Type                                                                            |
 | ---- | --------------- | ------------------------------------------------------------------------------- |
-| diff | diff 完成后触发 | (result: {stat: { isChanged: boolean, addNum: number, delNum: number}}) => void |
+| diff | 差异计算完成后触发 | (result: {stat: { isChanged: boolean, addNum: number, delNum: number}}) => void |
 
 ## 组件插槽
 
 | Name | Description                     |
 | ---- | ------------------------------- |
-| stat | 自定义统计内容，参数为 { stat } |
+| stat | 自定义统计内容，插槽参数为 `{ stat }` |
 
-## 拓展高亮语言
+## 扩展高亮语言
 
-为了减小打包后的体积，系统默认仅支持以下常用语言
+为了减小打包体积，默认只注册以下语言：
 
 - plaintext
 - xml/html
@@ -197,7 +199,7 @@ Vue.use(CodeDiff)
 - bash
 - sql
 
-如果您需要的语言不在其中，可以手动引入相关的语言高亮模块
+如需使用其他语言，可以手动引入并注册对应的高亮模块。
 
 ```shell
 pnpm add highlight.js
@@ -208,7 +210,7 @@ pnpm add highlight.js
 <script>
 import { CodeDiff, hljs } from 'v-code-diff'
 import c from 'highlight.js/lib/languages/c'
-// Extend C language
+// 注册 C 语言
 hljs.registerLanguage('c', c)
 export default {
   components: {
@@ -220,8 +222,8 @@ export default {
 <template>
   <div>
     <CodeDiff
-      old-string="#include <stdio.h>"
-      new-string="#include <stdio.h>\nint a = 1;"
+      :old-string="'#include <stdio.h>'"
+      :new-string="'#include <stdio.h>\nint a = 1;'"
       output-format="side-by-side"
       language="c"
     />
@@ -231,7 +233,7 @@ export default {
 #### 全局注册
 ```typescript
 import CodeDiff from "v-code-diff"
-// Extend C language
+// 注册 C 语言
 import c from "highlight.js/lib/languages/c"
 
 CodeDiff.hljs.registerLanguage("c", c)
@@ -239,13 +241,12 @@ CodeDiff.hljs.registerLanguage("c", c)
 
 ## 从 0.x 版本迁移
 
-v-code-diff 的 1.x 版本相较于 0.x 版本，具有打包体积减小、性能提升等特性。并且我们会在功能上尽量对齐 0.x 版本，降低您的迁移成本。
+v-code-diff 1.x 相比 0.x 具有更小的打包体积和更好的性能，同时保留其核心功能。
 
 重点：
 
-- 1.x 版本中，不再会自动识别语言并高亮，您需要手动指定语言类型，如 `language="python"`，若不指定则默认为纯文本`plaintext`
-  ，不会进行高亮。
-- 1.x 版本中，由于渲染和高亮是同时进行，因此移除了组件事件
+- 1.x 不再自动识别并高亮语言。请显式指定语言，例如 `language="python"`；未指定时使用 `plaintext`，不进行语法高亮。
+- 1.x 移除了旧的 `before-render` 和 `after-render` 事件，`diff` 事件仍然可用
 - 1.x 版本中，以下组件属性(Prop)有变动
   - highlight - 移除
   - drawFileList - 移除
@@ -253,11 +254,11 @@ v-code-diff 的 1.x 版本相较于 0.x 版本，具有打包体积减小、性�
   - newFilename - 新增
   - theme - 新增
 
-以下是两个版本具体的差异点，您可以参照阅读完成迁移。
+以下表格列出了两个版本的具体差异。
 
 ### 组件事件对比
 
-1.x 版本中，由于渲染与高亮是同时进行，因此不再提供组件事件
+1.x 不再提供 `before-render` 和 `after-render` 事件。
 
 | 事件名称      | 说明     |
 | ------------- | -------- |
